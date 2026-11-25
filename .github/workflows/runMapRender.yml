@@ -1,0 +1,27 @@
+name: Render Maps
+
+on:
+  push: # Mirror of nf-mapchecker.yml
+    branches: [ "main" ]
+    paths:
+    # Entity pathspecs - If any of these change (i.e. suffix changes etc), this check should run.
+    - "Resources/Prototypes/Entities/**/*.yml"
+    - "Resources/Prototypes/_NF/Entities/**/*.yml"
+    - "Resources/Prototypes/Nyanotrasen/Entities/**/*.yml"
+    - "Resources/Prototypes/_DV/Entities/**/*.yml"
+    # Map pathspecs - If any maps are changed, this should run.
+    - "Resources/Maps/**/*.yml"
+    # Also the mapchecker itself
+    - ".github/mapchecker/**"  
+
+jobs:
+ publish_changelog:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Render Maps
+      run: Tools/autowiki/autowiki.py
+      env:
+        AUTOWIKI_USER: ${{ secrets.AUTOWIKI_USER }}
+        AUTOWIKI_PASS: ${{ secrets.AUTOWIKI_PASS }}
+    continue-on-error: true
