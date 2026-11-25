@@ -11,14 +11,36 @@ on:
     - "Resources/Prototypes/_DV/Entities/**/*.yml"
     # Map pathspecs - If any maps are changed, this should run.
     - "Resources/Maps/**/*.yml"
-    # Also the mapchecker itself
-    - ".github/mapchecker/**"  
 
 jobs:
  publish_changelog:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout Master
+      uses: actions/checkout@v4.2.2
+
+    - name: Setup Submodule
+      run: |
+        git submodule update --init --recursive
+
+    - name: Pull engine updates
+      uses: space-wizards/submodule-dependency@v0.1.5
+
+    - name: Update Engine Submodules
+      run: |
+        cd RobustToolbox/
+        git submodule update --init --recursive
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v4.1.0
+      with:
+        dotnet-version: 10.0.x
+
+    - name: Install Dependencies
+      run: dotnet restore
+
+    - name: Build Project
+      run: dotnet build --configuration DebugOpt --no-restore /p:WarningsAsErrors=nullable /m
     - name: Render Maps
       run: Tools/autowiki/autowiki.py
       env:
