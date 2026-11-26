@@ -12,5 +12,5 @@ def clearRenders():
 
 if __name__ == '__main__':
     clearRenders()
-    shipRenders = parseShips.run()
-    renderUpload.uploadImages(renderCache=shipRenders, rate=1, prefix='Ship')
+    shipRenders = parseShips.run(full=True)
+    renderUpload.uploadImages(renderCache=shipRenders, rate=2, prefix='Ship')

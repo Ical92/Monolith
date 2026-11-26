@@ -74,10 +74,10 @@ def listPaths():
     out = out + " ".join(paths)
     print(out)
 
-def render():
+def render(full=False):
     cmd = ["dotnet", "run", "--no-build", "--project", "Content.MapRenderer"]
     for data in shipData.values():
-        if data['shuttlePath'] in diff:
+        if full or data['shuttlePath'] in diff:
             path:str = data['shuttlePath']
             cmd.append(path)
             shortPath = path[path.rindex('/')+1:path.index('.yml')]
@@ -91,9 +91,9 @@ def getDiff():
     diff = diff.splitlines()
     diff = list(map(lambda n: "/"+str(os.path.relpath(str(n, encoding='utf-8'), 'Resources')).replace('\\', '/'), diff))
 
-def run() -> dict:
+def run(full=False) -> dict:
     getDiff()
     parseFiles()
     # buildWikiTable()
-    render()
+    render(full)
     return renderCache
